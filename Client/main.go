@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 )
@@ -10,18 +11,19 @@ func main() {
 }
 
 func hoemPage(response http.ResponseWriter, r *http.Request) {
-	log.Println("GO web api")
+	fmt.Println("GO web api")
 }
 
-func aboueMe(response http.ResponseWriter, r *http.Request) {
+func aboutMe(response http.ResponseWriter, r *http.Request) {
 	who := "songsong"
 
-	log.Println(response, "AboueMe", who)
+	fmt.Fprintf(response, "hihi")
+	fmt.Println("EndPoint Hit : ", who)
 }
 
 func request1() {
 	http.HandleFunc("/", hoemPage)
-	http.HandleFunc("/aboueme", aboueMe)
+	http.HandleFunc("/aboutme", aboutMe)
 
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }

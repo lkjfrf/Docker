@@ -1,12 +1,24 @@
-# Install the base requirements for the app.
-# This stage is to support development.
-FROM golang:latest
+FROM golang:alpine AS builder
 
-RUN mkdir /build
+ENV GO111MODULE=on \
+    CGO_ENABLED=0 \
+    GOOS=linux \
+    GOARCH=amd64
+
 WORKDIR /build
 
-RUN export GO111MODULE=on
-RUN go get github.com/lkjfrf/client/main
+COPY go.mod main.go ./
 
-EXPOSE 8080
-ENTRYPOINT [ "/client/main.go" ]
+RUN go mod download
+
+RUN go build -o main .
+
+WORKDIR /dist
+
+RUN cp /build/main .
+
+FROM scratch
+
+COPY --from=builder /dist/main .
+
+ENTRYPOINT ["/main"]
